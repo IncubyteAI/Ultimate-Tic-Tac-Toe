@@ -1,0 +1,88 @@
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import numpy as np
+
+#original
+def pretty_print(board):
+  fig, ax = plt.subplots()
+  cmap = colors.ListedColormap(['white', 'red', 'blue'])
+  bounds = [-0.5,0.5,1.5,2.5]
+  norm = colors.BoundaryNorm(bounds, cmap.N)
+
+  ax.imshow(np.array(board).reshape((3,3)), cmap=cmap, norm=norm)
+
+  ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
+  ax.set_xticks(np.arange(-.5, 3, 1));
+  ax.set_yticks(np.arange(-.5, 3, 1));
+
+  plt.show()
+
+
+#nxn
+def pretty_print(board, n):
+    fig, ax = plt.subplots()
+    cmap = colors.ListedColormap(['white', 'red', 'blue'])
+    bounds = [-0.5, 0.5, 1.5, 2.5]
+    norm = colors.BoundaryNorm(bounds, cmap.N)
+
+    ax.imshow(np.array(board), cmap=cmap, norm=norm)
+
+    ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=2)
+
+    # Calculate tick positions and set labels
+    x_ticks = np.arange(-.5, n, 1)
+    y_ticks = np.arange(-.5, n, 1)
+    ax.set_xticks(x_ticks)
+    ax.set_yticks(y_ticks)
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+
+    plt.show()
+
+#3D - call pretty_print3D()
+import plotly.graph_objects as go
+import numpy as np
+
+def create_cube(x, y, z, size=1, color='white'):
+    x_data = np.array([0, 0, size, size, 0, 0, size, size], dtype=float)
+    y_data = np.array([0, size, size, 0, 0, size, size, 0], dtype=float)
+    z_data = np.array([0, 0, 0, 0, size, size, size, size], dtype=float)
+
+    x_data += x
+    y_data += y
+    z_data += z
+
+    cube = go.Mesh3d(x=x_data, y=y_data, z=z_data, color=color, flatshading=True)
+    return cube
+
+def pretty_print3D(board):
+    size = 1
+    spacing = size + 0.1
+
+    # Map values on the board to colors
+    color_map = {0: 'white', 1: 'red', 2: 'blue'}
+
+    tic_tac_toe_board = go.Figure()
+
+    for layer_idx, layer in enumerate(board):
+        for row_idx, row in enumerate(layer):
+            for col_idx, cell in enumerate(row):
+                x = col_idx * spacing
+                y = row_idx * spacing
+                z = layer_idx * spacing
+
+                value = cell
+                cube_color = color_map[value]
+                tic_tac_toe_board.add_trace(create_cube(x, y, z, size=size, color=cube_color))
+
+    # Set the axis properties and camera view
+    tic_tac_toe_board.update_layout(scene=dict(
+        xaxis=dict(showgrid=False, showbackground=False, showline=False, showticklabels=False, color='black'),
+        yaxis=dict(showgrid=False, showbackground=False, showline=False, showticklabels=False, color='black'),
+        zaxis=dict(showgrid=False, showbackground=False, showline=False, showticklabels=False, color='black'),
+        bgcolor='black'
+    ), margin=dict(l=0, r=0, b=0, t=0))
+
+    tic_tac_toe_board.show()
+
+
