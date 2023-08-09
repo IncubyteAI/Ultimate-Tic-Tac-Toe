@@ -1,10 +1,8 @@
 import torch
-from torch import autograd
 from torch.optim import Adam
 from collections import deque
 import torch.nn as nn
 from torch.distributions import Categorical
-import numpy as np
 from util import Result
 class NN(nn.Module):
     def __init__(self, board_size):
@@ -24,9 +22,7 @@ class Player:
     def __init__(self, board_length, gamma, lr, passive, draw, illegal):
         self.board_length = board_length
         self.board_size = board_length ** 2
-        # self.device = torch.device("cpu")
         self.nn = NN(self.board_size)
-        # self.nn.to(self.device)
         self.training = True
         self.gamma = gamma
         self.lr = lr
@@ -43,7 +39,6 @@ class Player:
     def get_action(self, num):
         return (num // self.board_length, num % self.board_length)
     def move(self, state: list[list[int]]):
-        # print(state)
         for i in range(self.board_length):
             for j in range(self.board_length):
                 if state[i][j] == 2:
@@ -91,10 +86,6 @@ class Player:
             self.optimizer.step()
             self.optimizer.zero_grad()
             del self.batch[:]
-        # loss.backward()
-        # self.optimizer.step()
-        # self.optimizer.zero_grad()
         del self.log_probs[:]
         del self.rewards[:]
         del self.entropies[:]
-        # self.loss = torch.tensor(0.0, device=self.device)
