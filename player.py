@@ -50,7 +50,7 @@ class Player:
                     state[i][j] = -1
         state = torch.tensor(state).flatten().to(torch.float32)# .to(self.device)
         if self.training:
-            probs = self.nn(state) * (1 - self.er) + self.er / self.board_size
+            probs = self.nn(state)
             self.entropies.append(-torch.sum(probs * torch.log(probs)))
             m = Categorical(probs)
             action_num = m.sample()
@@ -70,30 +70,16 @@ class Player:
             return self.draw
     def train(self, result: Result):
         self.rewards[-1] = self.score(result)
-        # if self.score(result) < 0:
-        #     self.bad.append(result)
-        #     if len(self.bad) > self.max_bad:
-        #         self.nn = NN(self.board_size)
-        #         self.optimizer = Adam(self.nn.parameters(), lr=0.001)
-        #         del self.bad[:]
-        # else:
-        #     self.bad = []
         self.c += 1
         if self.c % 5000 == 0:
-            print(self.rewards, self.mx)
+            print(self.rewards)
             print(result, self.score(result))
-            # print(self.log_probs)
         loss = torch.tensor(0.0)
         G = deque()
         R = 0
         for r in self.rewards[::-1]:
             R = r + self.gamma * R
             G.appendleft(R)
-
-        # self.cur_R.append(R)
-        # if len(self.cur_R) == self.avg_len:
-        #     self.R.append(sum(self.cur_R) / self.avg_len)
-        #     del self.cur_R[:]
         G = torch.tensor(G)
         for log_prob, R in zip(self.log_probs, G):
             loss -= log_prob * R
