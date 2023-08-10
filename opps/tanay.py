@@ -1,5 +1,5 @@
 import random
-from util import Result
+from util.result import Result
 class TicTacTanay:
   def __init__(self, alpha=0.9, gamma=0.9, epsilon=0.1):
     self.alpha = alpha  # learning rate

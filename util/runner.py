@@ -1,5 +1,5 @@
-from controller import Controller
-from util import Result
+from util.controller import Controller
+from util.result import Result
 def run_episode(verbose: bool, first, second, train=True)->int:
   cnt = 0
   controller = Controller(verbose=verbose)
