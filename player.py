@@ -58,7 +58,7 @@ class Player:
         if result == Result.WIN:
             return self.draw
         elif result == Result.LOSS:
-            return -self.illegal
+            return -1
         elif result == Result.ILLEGAL:
             return -self.illegal
         else:
@@ -66,7 +66,7 @@ class Player:
     def train(self, result: Result):
         self.rewards[-1] = self.score(result)
         self.c += 1
-        if self.c % 5000 == 0:
+        if self.c % 2000 == 0:
             print(self.rewards)
             print(result, self.score(result))
         loss = torch.tensor(0.0)
