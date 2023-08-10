@@ -3,7 +3,7 @@ from torch.optim import Adam
 from collections import deque
 import torch.nn as nn
 from torch.distributions import Categorical
-from util import Result
+from util.result import Result
 class NN(nn.Module):
     def __init__(self, board_size):
         super().__init__()
