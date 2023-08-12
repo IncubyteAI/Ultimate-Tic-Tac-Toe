@@ -17,7 +17,6 @@ class NN(nn.Module):
         )
     def forward(self, x):
         return self.layers(x)
-    
 class Player:
     def __init__(self, board_length=3, gamma=1, lr=0.001, passive=0.3, draw=1, illegal=0.3, entropy_weight=1, verbose=False):
         self.board_length = board_length
@@ -47,7 +46,7 @@ class Player:
                     state[i][j] = -1
         state = torch.tensor(state).flatten().to(torch.float32) # .to(self.device)
         if self.training:
-            probs = self.nn(state)
+            probs = self.nn(state) # self.nn.forward(state)
             self.entropies.append(-torch.sum(probs * torch.log(probs)))
             m = Categorical(probs)
             action_num = m.sample()
