@@ -19,7 +19,7 @@ class NN(nn.Module):
         return self.layers(x)
     
 class Player:
-    def __init__(self, board_length, gamma, lr, passive, draw, illegal):
+    def __init__(self, board_length=3, gamma=1, lr=0.001, passive=0.3, draw=1, illegal=0.3, entropy_weight=1, verbose=False):
         self.board_length = board_length
         self.board_size = board_length ** 2
         self.nn = NN(self.board_size)
@@ -36,6 +36,8 @@ class Player:
         self.batch_size = 1
         self.c = 0
         self.entropies = []
+        self.entropy_weight = entropy_weight
+        self.verbose = verbose
     def get_action(self, num):
         return (num // self.board_length, num % self.board_length)
     def move(self, state: list[list[int]]):
@@ -43,7 +45,7 @@ class Player:
             for j in range(self.board_length):
                 if state[i][j] == 2:
                     state[i][j] = -1
-        state = torch.tensor(state).flatten().to(torch.float32)# .to(self.device)
+        state = torch.tensor(state).flatten().to(torch.float32) # .to(self.device)
         if self.training:
             probs = self.nn(state)
             self.entropies.append(-torch.sum(probs * torch.log(probs)))
@@ -66,7 +68,7 @@ class Player:
     def train(self, result: Result):
         self.rewards[-1] = self.score(result)
         self.c += 1
-        if self.c % 2000 == 0:
+        if self.c % 2000 == 0 and self.verbose:
             print(self.rewards)
             print(result, self.score(result))
         loss = torch.tensor(0.0)
@@ -78,7 +80,9 @@ class Player:
         G = torch.tensor(G)
         for log_prob, R in zip(self.log_probs, G):
             loss -= log_prob * R
-        loss -= torch.stack(self.entropies).mean()
+        if self.c % 5000 == 0 and self.verbose:
+            print(loss.item(), torch.stack(self.entropies).mean().item())
+        loss -= torch.stack(self.entropies).mean() * self.entropy_weight
         self.batch.append(loss)
         if len(self.batch) == self.batch_size:
             batch_loss = torch.stack(self.batch).mean()
