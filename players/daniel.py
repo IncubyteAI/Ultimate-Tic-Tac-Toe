@@ -33,7 +33,6 @@ class Player:
         self.illegal = illegal
         self.batch = []
         self.batch_size = 1
-        self.c = 0
         self.entropies = []
         self.entropy_weight = entropy_weight
         self.verbose = verbose
@@ -64,10 +63,9 @@ class Player:
             return -self.illegal
         else:
             return self.draw
-    def train(self, result: Result):
+    def train(self, result: Result, game_num: int):
         self.rewards[-1] = self.score(result)
-        self.c += 1
-        if self.c % 2000 == 0 and self.verbose:
+        if game_num % 2000 == 0 and self.verbose:
             print(self.rewards)
             print(result, self.score(result))
         loss = torch.tensor(0.0)
@@ -79,7 +77,7 @@ class Player:
         G = torch.tensor(G)
         for log_prob, R in zip(self.log_probs, G):
             loss -= log_prob * R
-        if self.c % 5000 == 0 and self.verbose:
+        if game_num % 5000 == 0 and self.verbose:
             print(loss.item(), torch.stack(self.entropies).mean().item())
         loss -= torch.stack(self.entropies).mean() * self.entropy_weight
         self.batch.append(loss)

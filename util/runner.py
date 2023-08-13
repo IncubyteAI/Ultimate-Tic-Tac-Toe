@@ -1,6 +1,6 @@
 from util.controller import Controller
 from util.result import Result
-def run_episode(verbose: bool, first, second, train=True)->int:
+def run_episode(verbose: bool, first, second, game_num, train=True)->int:
   cnt = 0
   controller = Controller(verbose=verbose)
   # illegal = False
@@ -49,6 +49,6 @@ def run_episode(verbose: bool, first, second, train=True)->int:
     second.points += 2
     if verbose:
       print("player 2 won")
-  first.train(p1)
-  second.train(p2)
+  first.train(p1, game_num=game_num)
+  second.train(p2, game_num=game_num)
   return cnt

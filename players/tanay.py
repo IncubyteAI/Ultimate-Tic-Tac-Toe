@@ -30,7 +30,7 @@ class TicTacTanay:
   def move(self, board):
     return self.get_move(board)
 
-  def train(self, result):
+  def train(self, result, **kwargs):
     if result == Result.WIN:
       final_reward = 1
     elif result == Result.LOSS:

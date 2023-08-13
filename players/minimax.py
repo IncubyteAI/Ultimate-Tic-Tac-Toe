@@ -89,5 +89,5 @@ class Minimax:
     return self.next_move[Board(board)]
     # ^ to use this with the central host, uncomment the line above and comment the line below
     # return self.next_move[board]
-  def train(self, result):
+  def train(self, result, **kwargs):
     pass

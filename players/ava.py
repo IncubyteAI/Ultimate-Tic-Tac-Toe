@@ -29,7 +29,7 @@ class QLearning:
         # Return the action as a tuple
         return divmod(action, 3)
 
-    def train(self, reward):
+    def train(self, reward, **kwargs):
         # Get the current state and Q-value
         state = self.last_state
         action = self.last_action
