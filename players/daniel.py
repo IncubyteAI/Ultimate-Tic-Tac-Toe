@@ -57,7 +57,7 @@ class Player:
             return self.get_action(int(torch.argmax(self.nn(state)).item()))
     def score(self, result: Result):
         if result == Result.WIN:
-            return self.draw
+            return 2 * self.draw
         elif result == Result.LOSS:
             return -1
         elif result == Result.ILLEGAL:
