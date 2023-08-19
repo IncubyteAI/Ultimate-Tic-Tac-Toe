@@ -18,7 +18,7 @@ class NN(nn.Module):
     def forward(self, x):
         return self.layers(x)
 class Player:
-    def __init__(self, board_length=3, gamma=1, lr=0.001, passive=0.3, draw=1, illegal=0.3, entropy_weight=1, verbose=False):
+    def __init__(self, board_length=3, gamma=1, lr=0.001, passive=0.3, draw=1, illegal=0.3, entropy_weight=0.75, verbose=False):
         self.board_length = board_length
         self.board_size = board_length ** 2
         self.nn = NN(self.board_size)
@@ -56,7 +56,7 @@ class Player:
             return self.get_action(int(torch.argmax(self.nn(state)).item()))
     def score(self, result: Result):
         if result == Result.WIN:
-            return self.draw
+            return 1.5 * self.draw
         elif result == Result.LOSS:
             return -1
         elif result == Result.ILLEGAL:
