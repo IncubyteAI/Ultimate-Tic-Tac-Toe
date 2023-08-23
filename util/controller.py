@@ -2,6 +2,13 @@ import copy
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import numpy as np
+
+if not 'server_mode' in locals():
+  print("Running w/o Server")
+  server_mode = False
+else:
+  print("Running in Server")
+  
 def pretty_print(board):
   fig, ax = plt.subplots()
   cmap = colors.ListedColormap(['white', 'red', 'blue'])
